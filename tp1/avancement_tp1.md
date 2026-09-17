@@ -57,14 +57,53 @@ manquant a été identifié précisément dans Mission 1 ci-dessous.
 - [x] Stockage du JWT côté navigateur, jamais loggé (déjà en place, `localStorage` + Signal `token`)
 - [x] Signal `currentUser` mis à jour après login/register (déjà en place)
 - [x] Redirection après connexion/inscription réussie (déjà en place, `router.navigateByUrl('/tracks')`)
-- [ ] **Bouton de déconnexion + nettoyage de l'état local** — manquant : `app.html` n'a aucun bouton logout ni affichage conditionnel selon `currentUser`
+- [x] **Bouton de déconnexion + nettoyage de l'état local** — ajouté dans `app.html`/`app.ts` : affiché selon `auth.token()` (pas `currentUser()` seul, pour rester correct après un F5 où `currentUser` n'est pas réhydraté), appelle `auth.logout()` puis redirige vers `/login`
 - [x] Chargement de `/api/users/me` sur la page profil (déjà en place)
 - [x] Modification du nom via `PUT /api/users/me` (déjà en place)
-- [ ] **Gestion du `401` → redirection vers `/login`** — manquant : `auth.interceptor.ts` ne fait qu'ajouter le header, il n'intercepte pas les erreurs 401 de retour ; `auth.guard.ts` ne vérifie que la présence locale du token, pas sa validité serveur
+- [x] **Gestion du `401` → redirection vers `/login`** — `auth.interceptor.ts` intercepte maintenant les erreurs de la requête : si un token avait été envoyé et que la réponse est `401` (token invalide/expiré), on appelle `auth.logout()` + `router.navigateByUrl('/login')`. Un `401` **sans** token (ex : mauvais mot de passe sur `/auth/login`) n'est pas concerné, il reste géré par le composant (message d'erreur du formulaire)
 
-→ Il reste concrètement deux choses à coder pour clore Mission 1 : le bouton
-logout dans le header, et un intercepteur (ou une gestion d'erreur dans
-`AuthService`) qui détecte un `401` et redirige vers `/login`.
+**Tests automatisés** : `auth.interceptor.spec.ts` créé (4 tests, tous verts) :
+header ajouté si token présent / absent, redirection + logout sur 401 avec
+token, pas de redirection sur 401 sans token. Lancer avec `npm test` dans
+`frontend-starter/`.
+
+⚠️ Pour faire tourner `npm test`, il a fallu : ajouter `jsdom` en devDependency,
+et ajouter une configuration `development` (vide) au target `build` dans
+`angular.json` — absente à l'origine, ce qui faisait échouer le nouveau
+test-runner Angular (`@angular/build:unit-test`) même sans aucun test écrit.
+
+**Validé manuellement dans le navigateur** :
+- [x] Bouton logout visible + fonctionnel après login (confirmé)
+- [x] Redirection automatique vers `/login` en falsifiant `gpc_token` dans
+  localStorage puis F5 (confirmé — attention : un simple clic sur le bouton
+  "Actualiser" de l'appli ne suffit pas, il faut un vrai rechargement complet
+  de la page pour que le Signal `token` relise localStorage)
+
+**Mission 1 : terminée.** puis en rechargeant/naviguant
+
+## Fonctionnalité ajoutée — hors périmètre TP1 (fait)
+
+Problème identifié : en binôme, chaque membre a son propre backend local
+(donc son propre dossier `backend/data/uploads/`) mais partage la même base
+Mongo (NAS). Résultat : la métadonnée d'une piste uploadée par l'un apparaît
+chez l'autre, mais le fichier audio physique n'existe que sur la machine de
+celui qui l'a uploadée → erreur si l'autre clique dessus.
+
+- [x] `TrackService.isAvailable(id)` — requête `HEAD /api/tracks/:id/audio`,
+  retourne `true`/`false` (aucune modification du backend, la route existante
+  renvoie déjà 404 si le fichier est absent du disque)
+- [x] `TracksPageComponent` vérifie chaque piste au chargement de la liste
+  (`forkJoin` sur tous les checks de la page) et stocke les IDs indisponibles
+- [x] UI : piste grisée (`opacity: 0.45`), bouton lecture désactivé, message
+  "Fichier indisponible sur ce backend" affiché
+- [x] Testé en conditions réelles : faux document inséré directement dans
+  Mongo (métadonnée présente, fichier absent du disque) → confirmé grisé
+  dans le navigateur
+
+⚠️ Donnée de test conservée volontairement dans la base (`title: "Test fichier
+manquant"`, `_id: 6aabe49817de645caf9dc29d`) pour garder une démonstration
+visuelle du grisage. À supprimer avant le rendu final si ce n'est pas voulu
+dans la démo.
 
 ## Checkpoint Network — terminé
 

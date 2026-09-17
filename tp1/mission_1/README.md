@@ -1,13 +1,14 @@
 # Mission 1 — Auth & Profil
 
 Le code de Mission 1 vit dans `frontend-starter/` (pas ici) : c'est le
-projet Angular réel, pas un dossier de documentation. Ce dossier sert à
-stocker les preuves/livrables produits pendant cette mission.
+projet Angular réel, pas un dossier de documentation.
 
-Voir `../avancement_tp1.md` pour la liste précise de ce qui manque encore
-dans le code (bouton logout, gestion du 401 → redirection `/login`).
+**Résumé complet de la mission (étapes, décisions, tests) : voir `MISSION_1.md`.**
 
-## À déposer ici une fois fait
+Mission 1 terminée — voir aussi `../avancement_tp1.md` pour le suivi
+détaillé de tout le TP1.
+
+## À déposer ici pour les livrables finaux
 
 - Captures d'écran DevTools > Network (connexion réussie, connexion
   refusée, GET/PUT `/api/users/me`)
