@@ -115,7 +115,7 @@ dans la démo.
 
 ## Livrables TP1 — à faire
 
-- [ ] Code frontend complété (logout + gestion 401, voir Mission 1)
+- [x] Code frontend complété (logout + gestion 401, voir Mission 1)
 - [x] Schéma annoté du flux de connexion (`mission_0/flux-login.excalidraw` / `mission_0/flux-login.png`)
 - [x] Capture Network d'une requête d'authentification (login 200 + 401 obtenus)
 - [ ] Explication écrite Signal vs `localStorage`
