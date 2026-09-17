@@ -1,1 +1,14 @@
 :host { display: block; }
+
+.track.unavailable {
+  opacity: 0.45;
+}
+
+.track.unavailable button {
+  cursor: not-allowed;
+}
+
+.unavailable-label {
+  color: #b91c1c !important;
+  font-style: italic;
+}

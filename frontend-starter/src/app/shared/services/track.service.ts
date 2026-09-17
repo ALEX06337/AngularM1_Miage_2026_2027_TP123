@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { catchError, map, of } from 'rxjs';
 import { Page } from '../models/page.model';
 import { Track } from '../models/track.model';
 
@@ -25,5 +26,20 @@ export class TrackService {
     return this.http.get(`/api/tracks/${id}/audio`, {
       responseType: 'blob',
     });
+  }
+
+  /**
+   * Vérifie que le fichier audio existe réellement sur le backend
+   * interrogé (utile quand deux binômes partagent la même base Mongo
+   * mais ont chacun leurs fichiers sur leur propre machine : la métadonnée
+   * existe pour les deux, le fichier non).
+   */
+  isAvailable(id: string) {
+    return this.http
+      .head(`/api/tracks/${id}/audio`, { observe: 'response' })
+      .pipe(
+        map(() => true),
+        catchError(() => of(false)),
+      );
   }
 }

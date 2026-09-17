@@ -22,12 +22,20 @@
         <p>Chargement…</p>
       }
       @for (track of tracks(); track track.id) {
-        <div class="track">
+        <div class="track" [class.unavailable]="!isAvailable(track)">
           <div>
             <b>{{ track.title }}</b>
             <small>{{ track.originalName }} · {{ track.size }} Ko</small>
+            @if (!isAvailable(track)) {
+              <small class="unavailable-label">Fichier indisponible sur ce backend</small>
+            }
           </div>
-          <button type="button" (click)="play(track)" [attr.aria-label]="'Lire ' + track.title">▶</button>
+          <button
+            type="button"
+            (click)="play(track)"
+            [disabled]="!isAvailable(track)"
+            [attr.aria-label]="'Lire ' + track.title"
+          >▶</button>
         </div>
       } @empty {
         <p>Aucune piste.</p>
