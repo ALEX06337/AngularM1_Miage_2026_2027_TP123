@@ -107,16 +107,25 @@ dans la démo.
 
 ## Checkpoint Network — terminé
 
-- [x] Capture d'une connexion réussie (`login` → 200)
-- [x] Capture d'une connexion refusée (`login` → 401)
-- [x] Capture d'un GET `/api/users/me` (→ 200)
-- [ ] PUT `/api/users/me` (modification du nom) pas encore capturé séparément — à faire si besoin pour les livrables
-- [ ] Vérifier pour chaque requête retenue comme livrable : méthode, URL, body JSON, statut, réponse, présence de `Authorization` — jamais de mot de passe ou JWT en clair (à faire au moment de préparer le rendu)
+- [x] Capture d'une connexion réussie (`login` → 200) — fichier réel
+  `tp1/mission_1/capture-login-200.png`
+- [x] Capture d'une connexion refusée (`login` → 401) — fichiers réels
+  `tp1/mission_1/capture-login-401.png` (DevTools) et
+  `tp1/mission_1/capture-login-401-ui.png` (vue navigateur avec le message
+  "Identifiants incorrects")
+- [x] Capture d'un GET `/api/users/me` (→ 200) — fichier réel
+  `tp1/mission_1/capture-get-me.png` (**recadré** : la première version
+  envoyée affichait le JWT en clair dans le header `Authorization`, ce que
+  le sujet interdit explicitement — l'image a été recadrée avant d'être
+  ajoutée au projet pour ne garder que méthode/URL/statut)
+- [x] Vérifié pour chaque capture retenue : méthode, URL, statut, réponse
+  visibles, jamais de mot de passe ou de JWT en clair dans les fichiers du
+  dépôt
 
 ## Livrables TP1 — à faire
 
 - [x] Code frontend complété (logout + gestion 401, voir Mission 1)
 - [x] Schéma annoté du flux de connexion (`mission_0/flux-login.excalidraw` / `mission_0/flux-login.png`)
 - [x] Capture Network d'une requête d'authentification (login 200 + 401 obtenus)
-- [ ] Explication écrite Signal vs `localStorage`
-- [ ] Mise à jour de `RAPPORT_IA_MODELE.md` avec preuves d'usage de l'IA (captures d'écran à ajouter au projet)
+- [x] Explication écrite Signal vs `localStorage` — voir `mission_1/SIGNAL_VS_LOCALSTORAGE.md`
+- [ ] Mise à jour de `RAPPORT_IA_MODELE.md` avec preuves d'usage de l'IA (captures d'écran à ajouter au projet et liées dans le fichier)

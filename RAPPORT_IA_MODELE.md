@@ -166,8 +166,18 @@ token, pas de redirection sur 401 sans token) ; observation manuelle dans
 l'onglet Network des DevTools du header `Authorization: Bearer <token>`
 sur les requêtes vers `/api/users/me` une fois connecté, puis de la requête
 qui échoue en 401 et de la navigation vers `/login` juste après lorsqu'on
-force un token invalide. Captures d'écran à déposer dans
-`tp1/mission_1/` en complément (voir README de ce dossier).
+force un token invalide.
+
+Captures d'écran :
+
+- Connexion refusée (DevTools, `POST /api/auth/login` → `401`) :
+  ![login 401](tp1/mission_1/capture-login-401.png)
+- Connexion refusée (vue navigateur, message "Identifiants incorrects") :
+  ![login 401 UI](tp1/mission_1/capture-login-401-ui.png)
+- Connexion réussie (DevTools, `POST /api/auth/login` → `200`) :
+  ![login 200](tp1/mission_1/capture-login-200.png)
+- `GET /api/users/me` → `200` (DevTools) :
+  ![get me](tp1/mission_1/capture-get-me.png)
 
 **Ce que chaque membre sait maintenant expliquer sans l'agent** :
 pourquoi conditionner l'affichage du bouton logout sur `auth.token()`
