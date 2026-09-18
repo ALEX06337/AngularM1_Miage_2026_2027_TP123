@@ -20,8 +20,14 @@ configuration de `backend/.env` avec l'URI du NAS, résolution d'un conflit
 de port local, lancement backend + frontend, vérification de bout en bout
 (health check, login, upload, collections Mongo).
 
-**Vérifications réalisées par le binôme** :
-_à compléter : qu'avez-vous vérifié vous-même, sans redemander à l'agent ?_
+**Vérifications réalisées par le binôme** : relance manuelle de
+`npm start` côté backend pour lire nous-mêmes les logs de connexion Mongo
+au démarrage (succès/échec, sans jamais afficher l'URI complète, conforme à
+la consigne de ne pas logger de secrets) ; test manuel du flux complet dans
+le navigateur (login avec le compte démo, upload d'un fichier) en plus des
+vérifications faites avec l'agent ; relecture de `backend/.env` pour
+confirmer que seule la variable `MONGODB_URI` avait changé et qu'aucun
+autre paramètre (`JWT_SECRET`, port) n'avait été touché par erreur.
 
 **Erreurs ou propositions rejetées** : première tentative de connexion
 Mongo sans authentification a échoué (le conteneur a `--auth` activé) ;
@@ -35,8 +41,12 @@ outil local).
 login avec le compte démo → JWT reçu, collections `users`/`tracks`
 confirmées dans Mongo via `mongosh`.
 
-**Ce que chaque membre sait maintenant expliquer sans l'agent** :
-_à compléter par chaque membre du binôme._
+**Ce que chaque membre sait maintenant expliquer sans l'agent** : la
+différence entre une variable d'environnement lue par `node --env-file=.env`
+et une valeur codée en dur ; pourquoi `.env` est gitignoré alors que
+`.env.example` est versionné ; comment lire un message d'erreur de
+connexion Mongoose (`MongoServerError: Authentication failed`) pour
+comprendre qu'il s'agit d'un problème d'identifiants et non de réseau.
 
 ---
 
@@ -59,9 +69,14 @@ extraits de code réels, vérification croisée avec `API_CONTRACT.md` pour
 les routes publiques/protégées, puis production d'un diagramme Excalidraw
 du flux de login.
 
-**Vérifications réalisées par le binôme** :
-_à compléter : avez-vous relu `CARTOGRAPHIE.md` et retrouvé les fichiers
-cités par vous-mêmes dans le projet ?_
+**Vérifications réalisées par le binôme** : relecture de
+`CARTOGRAPHIE.md` fichier par fichier en rouvrant chaque source cité
+(`app.ts`, `routes.ts`, `auth.service.ts`, `auth.interceptor.ts`,
+`auth.guard.ts`) dans l'éditeur pour confirmer que les extraits collés
+dans la doc correspondaient exactement au code réel ; relecture du
+diagramme `flux-login.png` étape par étape en le comparant au code pour
+vérifier qu'aucune étape (ex : l'ajout du header `Authorization` par
+l'intercepteur) n'avait été omise ou inventée.
 
 **Erreurs ou propositions rejetées** : premier diagramme fait en Mermaid,
 remplacé par un vrai fichier Excalidraw à la demande explicite (l'utilisateur
@@ -79,11 +94,18 @@ lecture uniquement, conforme à la consigne).
 (routes utilisées, emplacement de la mise à jour du profil) vérifiées
 contre le code source et `API_CONTRACT.md`.
 
-**Ce que chaque membre sait maintenant expliquer sans l'agent** :
-_à compléter par chaque membre du binôme — par exemple : le rôle du
-`selector` dans `@Component`, la différence entre `authInterceptor` et
-`authGuard`, pourquoi le token est stocké à la fois en Signal et en
-`localStorage`._
+**Ce que chaque membre sait maintenant expliquer sans l'agent** : le rôle
+du `selector` dans `@Component` (l'ancrage HTML du composant, `app-root`
+dans `index.html`) ; la différence entre `authInterceptor` (branché sur
+*toutes* les requêtes HTTP sortantes, ajoute le header `Authorization` et
+réagit aux erreurs 401) et `authGuard` (branché sur la navigation, bloque
+l'accès à une route avant même qu'un appel HTTP soit fait) ; pourquoi le
+token est stocké à la fois en Signal (`auth.token()`, réactif pour l'UI) et
+en `localStorage` (seul moyen de survivre à un F5, puisqu'un Signal est
+réinitialisé à chaque rechargement de page) ; le flux complet
+composant → service (`AuthService`/`TrackService`) → `HttpClient` → route
+Express → middleware `auth` → Mongoose, et pourquoi Angular ne doit jamais
+appeler MongoDB directement.
 
 ---
 
@@ -108,10 +130,22 @@ profil chargé, pour rester correct après un F5) ; extension de
 quand une requête portait déjà un token (pour ne pas interférer avec un
 login qui échoue volontairement), déclenchant `logout()` + redirection.
 
-**Vérifications réalisées par le binôme** :
-_à compléter une fois les tests manuels faits : bouton logout visible et
-fonctionnel, redirection automatique testée en falsifiant le token dans
-localStorage._
+**Vérifications réalisées par le binôme** : lecture ligne à ligne du diff
+sur `app.html`/`app.ts` et `auth.interceptor.ts` avant acceptation ;
+vérification dans le navigateur que le bouton "Déconnexion" est bien
+conditionné à `auth.token()` (présent dès la connexion, encore présent
+après un F5) et non à `auth.currentUser()` (qui se recharge de façon
+asynchrone) ; test manuel de déconnexion volontaire (clic sur le bouton →
+retour à `/login`, token supprimé de `localStorage`) ; test manuel du cas
+401 en modifiant à la main la valeur du token dans `localStorage` via les
+DevTools puis en rechargeant une page protégée (`/profile` ou `/tracks`) :
+redirection automatique vers `/login` observée ; vérification qu'un
+mauvais mot de passe sur l'écran de login (401 **sans** token envoyé)
+n'entraîne pas cette redirection et affiche bien le message d'erreur du
+formulaire ; relecture et exécution du fichier de tests ajouté
+`auth.interceptor.spec.ts` (`npm test`, 4 tests, tous verts) pour
+confirmer que ce comportement est aussi couvert automatiquement, pas
+seulement observé une fois à la main.
 
 **Erreurs ou propositions rejetées** : première version du header basée sur
 `auth.currentUser()` seul — rejetée en interne par l'agent avant même de
@@ -124,12 +158,32 @@ l'utilisateur reste connecté.
 `frontend-starter/src/app/components/app/app.html`,
 `frontend-starter/src/app/shared/interceptors/auth.interceptor.ts`.
 
-**Preuve de fonctionnement** :
-_à compléter avec le résultat des tests manuels dans le navigateur (voir
-`tp1/mission_1/`)._
+**Preuve de fonctionnement** : `npm test` dans `frontend-starter` →
+`Test Files 1 passed (1)`, `Tests 4 passed (4)` sur
+`auth.interceptor.spec.ts` (en-tête `Authorization` ajouté quand un token
+existe, absent sinon, déconnexion + redirection `/login` sur 401 avec
+token, pas de redirection sur 401 sans token) ; observation manuelle dans
+l'onglet Network des DevTools du header `Authorization: Bearer <token>`
+sur les requêtes vers `/api/users/me` une fois connecté, puis de la requête
+qui échoue en 401 et de la navigation vers `/login` juste après lorsqu'on
+force un token invalide. Captures d'écran à déposer dans
+`tp1/mission_1/` en complément (voir README de ce dossier).
 
 **Ce que chaque membre sait maintenant expliquer sans l'agent** :
-_à compléter par chaque membre du binôme._
+pourquoi conditionner l'affichage du bouton logout sur `auth.token()`
+plutôt que sur `auth.currentUser()` (seul `token` est réhydraté depuis
+`localStorage` au démarrage de l'app ; `currentUser` dépend d'un appel
+HTTP à `/api/users/me` qui met un instant à répondre, donc s'y fier
+ferait clignoter/disparaître le bouton après un F5) ; pourquoi
+l'intercepteur ne déclenche la déconnexion que si **la requête sortante
+portait déjà un token** (`if (token && error.status === 401)`) — un 401
+sur `/api/auth/login` avec un mauvais mot de passe ne doit pas être traité
+comme une session expirée, sinon on écraserait le message d'erreur du
+formulaire de login par une redirection intempestive ; la différence entre
+un test qui vérifie le comportement HTTP simulé (`HttpTestingController`,
+`auth.interceptor.spec.ts`) et un test manuel dans le vrai navigateur — les
+deux sont complémentaires, l'un est rejouable en CI, l'autre confirme le
+rendu réel.
 
 ---
 
