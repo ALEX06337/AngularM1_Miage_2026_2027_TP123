@@ -21,8 +21,8 @@ Mission 3 vérifiée en navigateur (upload, lecture, propriétaire) — voir
 - [x] Réponse de lecture = vrai flux audio :
       [`capture-network-audio-headers.png`](capture-network-audio-headers.png)
       (`200`, `Content-Type: audio/mpeg`, `Content-Length`, `Accept-Ranges: bytes`)
-- [ ] Header `Authorization: Bearer ...` sur cette même requête — à confirmer
-      (scroller jusqu'à "Request Headers" dans le même panneau Network)
+- [x] Header `Authorization: Bearer ...` confirmé sur cette même requête
+      (onglet Request Headers du panneau Network)
 - [x] Propriétaire uniquement : [`capture-proprietaire-liste-vide.png`](capture-proprietaire-liste-vide.png)
       (2ᵉ compte `test_profil`, bibliothèque vide — la liste est bien filtrée
       par `ownerId` côté backend, pas seulement la lecture individuelle)

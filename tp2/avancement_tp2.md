@@ -114,8 +114,8 @@ précisément ce qui reste à faire par rapport à `SUJET_ETUDIANT_TP2.md` :
 - [x] La réponse de lecture est bien un flux audio —
       `capture-network-audio-headers.png` (`Content-Type: audio/mpeg`,
       `Content-Length`, `Accept-Ranges: bytes`)
-- [ ] Le header `Authorization: Bearer ...` sur la requête audio — à
-      confirmer (voir "Request Headers" dans le panneau Network)
+- [x] Le header `Authorization: Bearer ...` sur la requête audio — confirmé
+      (Request Headers, panneau Network)
 - [ ] Une erreur 400 est affichée pour un fichier invalide — non testable
       tel quel (`accept="audio/*"` filtre déjà la boîte de dialogue du
       navigateur), code de validation présent et conforme, à documenter
