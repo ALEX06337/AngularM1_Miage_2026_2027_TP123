@@ -16,6 +16,7 @@ export class TracksPageComponent {
   readonly page = signal(1);
   readonly pages = signal(1);
   readonly loading = signal(false);
+  readonly error = signal('');
   readonly audioUrl = signal('');
   readonly unavailable = signal<ReadonlySet<string>>(new Set());
   readonly title = new FormControl('', { nonNullable: true });
@@ -32,6 +33,7 @@ export class TracksPageComponent {
 
   load(): void {
     this.loading.set(true);
+    this.error.set('');
     this.unavailable.set(new Set());
     this.service.list(this.page()).subscribe({
       next: (response) => {
@@ -44,6 +46,7 @@ export class TracksPageComponent {
       error: (error) => {
         console.error('[TracksPage] Chargement impossible', error);
         this.loading.set(false);
+        this.error.set('Impossible de charger la bibliothèque. Réessayez plus tard.');
       },
     });
   }
