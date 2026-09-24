@@ -8,9 +8,26 @@
   <div class="grid">
     <article class="card">
       <h2>Importer</h2>
-      <label>Titre<input [formControl]="title" /></label>
-      <label>Fichier audio<input type="file" accept="audio/*" (change)="choose($event)" /></label>
-      <button type="button" (click)="upload()" [disabled]="!file">Envoyer</button>
+      <label>Titre<input [formControl]="title" [disabled]="uploading()" /></label>
+      <label>
+        Fichier audio
+        <input
+          type="file"
+          accept="audio/*"
+          [disabled]="uploading()"
+          (change)="choose($event)"
+        />
+      </label>
+      <small>Formats acceptés : MP3, WAV, OGG, M4A · 25 Mo maximum.</small>
+      @if (uploadError()) {
+        <p class="error" role="alert">{{ uploadError() }}</p>
+      }
+      @if (uploadSuccess()) {
+        <p class="success" role="status">{{ uploadSuccess() }}</p>
+      }
+      <button type="button" (click)="upload()" [disabled]="!file || uploading()">
+        {{ uploading() ? 'Envoi en cours…' : 'Envoyer' }}
+      </button>
     </article>
 
     <article class="card">
@@ -28,7 +45,8 @@
         <div class="track" [class.unavailable]="!isAvailable(track)">
           <div>
             <b>{{ track.title }}</b>
-            <small>{{ track.originalName }} · {{ track.size }} Ko</small>
+            <small>{{ track.originalName }}</small>
+            <small>{{ format(track) }} · {{ formatSize(track.size) }} · {{ formatDate(track.createdAt) }}</small>
             @if (!isAvailable(track)) {
               <small class="unavailable-label">Fichier indisponible sur ce backend</small>
             }
@@ -48,8 +66,14 @@
         <span>Page {{ page() }} / {{ pages() }}</span>
         <button type="button" (click)="go(page() + 1)" [disabled]="page() === pages()">Suiv.</button>
       </div>
+      @if (audioError()) {
+        <p class="error" role="alert">{{ audioError() }}</p>
+      }
       @if (audioUrl()) {
-        <audio [src]="audioUrl()" controls autoplay></audio>
+        <div class="now-playing">
+          <p>Lecture en cours : <b>{{ playingTrack()?.title }}</b></p>
+          <audio [src]="audioUrl()" controls autoplay></audio>
+        </div>
       }
     </article>
   </div>

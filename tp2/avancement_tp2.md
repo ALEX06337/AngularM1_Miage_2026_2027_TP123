@@ -61,24 +61,40 @@ précisément ce qui reste à faire par rapport à `SUJET_ETUDIANT_TP2.md` :
 - [ ] (Avancé, optionnel) Paginator Angular Material
 - [ ] (Avancé, optionnel) Pagination Mongoose via `aggregate-paginate-v2` + MAJ `API_CONTRACT.md`
 
-## Mission 3 — Upload et lecture audio — à faire
+## Mission 3 — Upload et lecture audio — code fait, vérif navigateur + questions à faire
 
+- [x] Validation frontend ajoutée dans `choose()` (`validate()` privée) :
+      types MIME alignés sur `backend/src/app.js` (mp3/wav/ogg/m4a) et
+      taille max 25 Mo, message d'erreur clair affiché (`uploadError`),
+      fichier rejeté remis à `undefined` et `<input type="file">` réinitialisé
+- [x] État `uploading()` : bouton "Envoyer" → "Envoi en cours…", désactivé
+      pendant l'envoi et anti double-soumission (`if (!this.file || this.uploading()) return`),
+      champs titre/fichier désactivés pendant l'envoi
+- [x] Erreurs serveur affichées (`uploadError`, lit `error?.error?.message`
+      renvoyé par le backend) au lieu d'un simple `console.error`
+- [x] Message de succès (`uploadSuccess`) affiché après un upload réussi
+- [x] Formulaire vidé (titre, fichier, `<input>` natif remis à vide) et page 1
+      rechargée après succès (déjà le cas, confirmé)
+- [x] Cards enrichies : titre, nom original, format (déduit du `mimeType`),
+      taille formatée (o/Ko/Mo via `formatSize`, corrige un bug d'affichage :
+      `track.size` est en octets côté backend, le template affichait
+      `{{ track.size }} Ko` sans conversion), date d'ajout formatée
+      (`formatDate`, `toLocaleDateString('fr-FR', ...)`)
+- [x] `DestroyRef.onDestroy()` révoque l'`ObjectURL` de lecture en cours à la
+      destruction du composant (fuite mémoire potentielle sinon)
+- [x] Signal `audioError` séparé pour les erreurs de lecture (affiché sous le lecteur)
+- [x] `npx tsc --noEmit` et `npx ng build` passent sans erreur (le build
+      vérifie aussi les templates, contrairement à `tsc` seul)
+- [ ] **À faire par toi** : test en navigateur réel (upload valide, upload
+      fichier trop gros/mauvais format, lecture, vérifier que l'erreur 400
+      backend s'affiche bien, vérifier Network que le multipart contient
+      bien `audio` + `title`) — je n'ai pas d'outil pour piloter un
+      navigateur ici, donc ceci n'est pas vérifié de mon côté
 - [ ] Documenter le flux composant → service → `HttpClient` → API (upload)
-      et API → `Blob` → `ObjectURL` → `<audio>` (lecture)
+      et API → `Blob` → `ObjectURL` → `<audio>` (lecture) — rédactionnel, à faire
 - [ ] Repérer l'intercepteur JWT sur la requête audio (`auth.interceptor.ts`)
-      et expliquer pourquoi un `src` direct ne reçoit pas le header
-- [ ] Ajouter la validation frontend (taille ≤ 25 Mo, format audio) avant
-      l'appel HTTP, avec message d'erreur clair
-- [ ] État de chargement + désactivation du bouton pendant l'envoi
-      (anti double-soumission)
-- [ ] Afficher les erreurs serveur (400, etc.) dans l'UI, pas juste en console
-- [ ] Message de succès après upload
-- [ ] Vérifier que le formulaire est vidé et la page 1 rechargée après succès
-      (partiellement fait : reset `title`/`file`/`page`, à confirmer)
-- [ ] Cards responsives/accessibles (titre, nom original, format, taille,
-      date d'ajout, action de lecture)
-- [ ] Révocation de l'`ObjectURL` à la destruction du composant (`ngOnDestroy`)
-- [ ] Répondre aux questions mémoire/buffering/streaming du sujet
+      et expliquer pourquoi un `src` direct ne reçoit pas le header — rédactionnel
+- [ ] Répondre aux questions mémoire/buffering/streaming du sujet — rédactionnel
 
 ## Checkpoint Network — à faire
 

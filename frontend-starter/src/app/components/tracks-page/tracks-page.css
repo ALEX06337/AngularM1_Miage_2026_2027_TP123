@@ -13,7 +13,14 @@
   font-style: italic;
 }
 
-.error {
-  color: #b91c1c;
-  font-weight: 600;
+.success {
+  color: #1d755e;
+}
+
+.now-playing {
+  margin-top: 0.8rem;
+}
+
+.now-playing p {
+  margin: 0 0 0.4rem;
 }
