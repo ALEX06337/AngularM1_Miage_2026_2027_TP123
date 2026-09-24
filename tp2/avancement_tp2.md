@@ -11,12 +11,12 @@ et `tp1/mission_1/`) :
   [`mission_3/FLUX_UPLOAD_LECTURE.md`](mission_3/FLUX_UPLOAD_LECTURE.md) (flux détaillé + intercepteur JWT),
   [`mission_3/BLOB_OBJECTURL_STREAMING.md`](mission_3/BLOB_OBJECTURL_STREAMING.md) (Blob/ObjectURL + 5 questions du sujet)
 
-## Prérequis (TP1 doit être fonctionnel) — à vérifier en début de séance
+## Prérequis (TP1 doit être fonctionnel) — vérifié
 
-- [ ] Backend lancé (`cd backend && npm start`), `GET /api/health` OK
-- [ ] Frontend lancé (`cd frontend-starter && npm start`), proxy `/api` → bon port
-- [ ] Connexion avec le compte démo (`demo@example.com` / `Demo1234!`) OK
-- [ ] Fichiers audio de test repérés dans `frontend-starter/fichiers-audio-de-test/`
+- [x] Backend lancé, `GET /api/health` OK (Mongo Atlas)
+- [x] Frontend lancé, proxy `/api` → bon port
+- [x] Connexion avec le compte démo OK
+- [x] Fichiers audio de test utilisés depuis `frontend-starter/fichiers-audio-de-test/`
 
 Rappel port (voir `tp1/avancement_tp1.md`) : le backend de ce projet tourne
 sur `PORT=3001` (`backend/.env`), pas 3000, et `proxy.conf.json` cible déjà
@@ -50,7 +50,7 @@ précisément ce qui reste à faire par rapport à `SUJET_ETUDIANT_TP2.md` :
   encore de format ni de date d'ajout affichés, pas de style "responsive"
   dédié
 
-## Mission 2 — Bibliothèque paginée — code fait, vérification Network à faire
+## Mission 2 — Bibliothèque paginée — terminé
 
 - [x] `TrackService.list` transmet bien `page`/`limit` (déjà conforme au départ)
 - [x] Signal `error` ajouté dans `tracks-page.ts` (mis à `''` au début de `load()`,
@@ -60,13 +60,12 @@ précisément ce qui reste à faire par rapport à `SUJET_ETUDIANT_TP2.md` :
 - [x] Aucun slicing local confirmé : chaque `go()` appelle `load()` qui refait
       un `GET /api/tracks?page=...` (pas de découpage côté Angular)
 - [x] Build vérifié (`npx tsc --noEmit`), aucune erreur de compilation
-- [ ] **À faire par toi** : lancer backend + frontend, se connecter, ouvrir
-      l'onglet Network, changer de page et vérifier que le paramètre `page`
-      change bien à chaque clic → capture d'écran pour les livrables
-- [ ] (Avancé, optionnel) Paginator Angular Material
-- [ ] (Avancé, optionnel) Pagination Mongoose via `aggregate-paginate-v2` + MAJ `API_CONTRACT.md`
+- [x] Vérifié en navigateur : changement de `page` confirmé en Network
+      (`mission_2/capture-network-page1.png`, `capture-network-page2-isavailable.png`)
+- [ ] (Avancé, optionnel — non fait, hors périmètre) Paginator Angular Material
+- [ ] (Avancé, optionnel — non fait, hors périmètre) Pagination Mongoose via `aggregate-paginate-v2` + MAJ `API_CONTRACT.md`
 
-## Mission 3 — Upload et lecture audio — code fait, vérif navigateur + questions à faire
+## Mission 3 — Upload et lecture audio — terminé
 
 - [x] Validation frontend ajoutée dans `choose()` (`validate()` privée) :
       types MIME alignés sur `backend/src/app.js` (mp3/wav/ogg/m4a) et
@@ -133,5 +132,4 @@ précisément ce qui reste à faire par rapport à `SUJET_ETUDIANT_TP2.md` :
 - [x] Capture/démo lecture audio (`mission_3/capture-lecture-audio.png`)
 - [x] Explication écrite du choix `Blob`/`ObjectURL` (`mission_3/BLOB_OBJECTURL_STREAMING.md`)
 - [x] Réponses aux questions mémoire/buffering/streaming (même fichier)
-- [ ] `RAPPORT_IA_MODELE.md` — section TP2 (Mission 2, Mission 3, bascule
-      Mongo Atlas) encore à rédiger
+- [x] `RAPPORT_IA_MODELE.md` — section TP2 rédigée (Mission 2, Mission 3, bascule Mongo Atlas)
