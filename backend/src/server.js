@@ -4,10 +4,19 @@ import { User } from "./models/User.js";
 
 // Le port et l'URI viennent de l'environnement du backend, jamais d'Angular.
 const port = process.env.PORT || 3000;
-const uri = process.env.MONGODB_URI;
+
+// MONGO_SOURCE choisit quelle URI utiliser ("local" ou "atlas").
+// MONGODB_URI reste supporté seul (sans MONGO_SOURCE) pour ne pas casser les .env existants.
+const source = (process.env.MONGO_SOURCE || "local").toLowerCase();
+const uri =
+  (source === "atlas" && process.env.MONGODB_URI_ATLAS) ||
+  (source === "local" && process.env.MONGODB_URI_LOCAL) ||
+  process.env.MONGODB_URI;
 
 if (!uri) {
-  const error = new Error("MONGODB_URI manque dans backend/.env");
+  const error = new Error(
+    "Aucune URI MongoDB trouvée : renseignez MONGODB_URI_LOCAL/MONGODB_URI_ATLAS (+ MONGO_SOURCE) ou MONGODB_URI dans backend/.env",
+  );
   console.error("[startup] Configuration MongoDB absente", error);
   throw error;
 }
@@ -16,7 +25,7 @@ try {
   // `await` suspend le démarrage jusqu'à la connexion effective à MongoDB.
   // Le `then` rend le succès visible dans les logs.
   await mongoose.connect(uri).then(() => {
-    console.log("[startup] Connecté à MongoDB Atlas");
+    console.log(`[startup] Connecté à MongoDB (source: ${source})`);
     console.log(
       "[startup] La base guitar-practice-cloud est prête à recevoir des données",
     );
