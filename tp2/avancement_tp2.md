@@ -43,21 +43,12 @@ précisément ce qui reste à faire par rapport à `SUJET_ETUDIANT_TP2.md` :
   encore de format ni de date d'ajout affichés, pas de style "responsive"
   dédié
 
-## Mission 2 — Bibliothèque paginée — code fait, vérification Network à faire
+## Mission 2 — Bibliothèque paginée — en cours
 
-- [x] `TrackService.list` transmet bien `page`/`limit` (déjà conforme au départ)
-- [x] Signal `error` ajouté dans `tracks-page.ts` (mis à `''` au début de `load()`,
-      rempli sur `error:` de la subscription) et affiché dans `tracks-page.html`
-      (`@if (error()) { <p class="error" role="alert"> }`), style `.error` ajouté
-      dans `tracks-page.css`
-- [x] Aucun slicing local confirmé : chaque `go()` appelle `load()` qui refait
-      un `GET /api/tracks?page=...` (pas de découpage côté Angular)
-- [x] Build vérifié (`npx tsc --noEmit`), aucune erreur de compilation
-- [ ] **À faire par toi** : lancer backend + frontend, se connecter, ouvrir
-      l'onglet Network, changer de page et vérifier que le paramètre `page`
-      change bien à chaque clic → capture d'écran pour les livrables
-- [ ] (Avancé, optionnel) Paginator Angular Material
-- [ ] (Avancé, optionnel) Pagination Mongoose via `aggregate-paginate-v2` + MAJ `API_CONTRACT.md`
+- [ ] Vérifier en Network que `TrackService.list` transmet bien `page`/`limit`
+- [ ] Ajouter le Signal d'erreur manquant (`error`) et l'afficher dans le template
+- [ ] Confirmer qu'aucun slicing local n'est fait (déjà conforme a priori)
+- [ ] Capture Network de la pagination (changement de page → nouvelle requête)
 - [ ] (Avancé, optionnel) Paginator Angular Material
 - [ ] (Avancé, optionnel) Pagination Mongoose via `aggregate-paginate-v2` + MAJ `API_CONTRACT.md`
 

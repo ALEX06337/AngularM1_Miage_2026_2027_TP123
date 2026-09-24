@@ -21,9 +21,6 @@
       @if (loading()) {
         <p>Chargement…</p>
       }
-      @if (error()) {
-        <p class="error" role="alert">{{ error() }}</p>
-      }
       @for (track of tracks(); track track.id) {
         <div class="track" [class.unavailable]="!isAvailable(track)">
           <div>
