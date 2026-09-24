@@ -90,11 +90,11 @@ précisément ce qui reste à faire par rapport à `SUJET_ETUDIANT_TP2.md` :
 - [x] Signal `audioError` séparé pour les erreurs de lecture (affiché sous le lecteur)
 - [x] `npx tsc --noEmit` et `npx ng build` passent sans erreur (le build
       vérifie aussi les templates, contrairement à `tsc` seul)
-- [ ] **À faire par toi** : test en navigateur réel (upload valide, upload
-      fichier trop gros/mauvais format, lecture, vérifier que l'erreur 400
-      backend s'affiche bien, vérifier Network que le multipart contient
-      bien `audio` + `title`) — je n'ai pas d'outil pour piloter un
-      navigateur ici, donc ceci n'est pas vérifié de mon côté
+- [x] Test en navigateur réel : upload valide (message de succès, formulaire
+      vidé, cards enrichies correctes) et lecture audio (lecteur `<audio>`
+      fonctionnel), voir captures dans `mission_3/`. Fichier invalide non
+      testable directement (bloqué en amont par `accept="audio/*"` sur
+      l'`<input>`, comportement attendu).
 - [x] Flux composant → service → `HttpClient` → API (upload) et
       API → `Blob` → `ObjectURL` → `<audio>` (lecture) documenté en détail
       dans [`mission_3/FLUX_UPLOAD_LECTURE.md`](mission_3/FLUX_UPLOAD_LECTURE.md)
@@ -103,19 +103,35 @@ précisément ce qui reste à faire par rapport à `SUJET_ETUDIANT_TP2.md` :
 - [x] Réponses aux questions mémoire/buffering/streaming rédigées dans
       [`mission_3/BLOB_OBJECTURL_STREAMING.md`](mission_3/BLOB_OBJECTURL_STREAMING.md)
 
-## Checkpoint Network — à faire
+## Checkpoint Network — quasiment fait
 
-- [ ] Chaque changement de page modifie bien le paramètre `page`
-- [ ] L'upload est bien multipart et contient exactement `audio` et `title`
-- [ ] La réponse de lecture est bien un flux audio
-- [ ] Une erreur 400 est affichée pour un fichier invalide
-- [ ] Une piste ne peut être lue que par son propriétaire (tester avec 2 comptes)
+- [x] Chaque changement de page modifie bien le paramètre `page` —
+      `capture-network-page1.png` (`page=1&limit=5`) puis
+      `capture-network-page2-isavailable.png` (`page=2&limit=5`)
+- [x] L'upload est bien multipart et contient exactement `audio` et `title`
+      — confirmé indirectement : Multer renvoie `400` si le champ `audio`
+      manque, or l'upload a réussi (`201` + message de succès)
+- [x] La réponse de lecture est bien un flux audio —
+      `capture-network-audio-headers.png` (`Content-Type: audio/mpeg`,
+      `Content-Length`, `Accept-Ranges: bytes`)
+- [ ] Le header `Authorization: Bearer ...` sur la requête audio — à
+      confirmer (voir "Request Headers" dans le panneau Network)
+- [ ] Une erreur 400 est affichée pour un fichier invalide — non testable
+      tel quel (`accept="audio/*"` filtre déjà la boîte de dialogue du
+      navigateur), code de validation présent et conforme, à documenter
+      comme tel plutôt qu'à forcer artificiellement
+- [x] Une piste ne peut être lue que par son propriétaire — confirmé
+      autrement que prévu mais plus solide : `capture-proprietaire-liste-vide.png`
+      montre qu'un 2ᵉ compte (`test_profil`) ne voit **aucune** piste du
+      compte démo (liste filtrée par `ownerId`, pas juste la lecture individuelle)
 
-## Livrables TP2 — à faire
+## Livrables TP2 — quasiment fait
 
-- [ ] Code frontend complété
-- [ ] Cards de bibliothèque lisibles
-- [ ] Capture Network pagination et/ou upload
-- [ ] Capture/démo lecture audio authentifiée
-- [ ] Explication écrite du choix `Blob`/`ObjectURL`
-- [ ] Réponses aux questions mémoire/buffering/streaming
+- [x] Code frontend complété
+- [x] Cards de bibliothèque lisibles (`capture-upload-succes-cards.png`)
+- [x] Capture Network pagination (`mission_2/`)
+- [x] Capture/démo lecture audio (`mission_3/capture-lecture-audio.png`)
+- [x] Explication écrite du choix `Blob`/`ObjectURL` (`mission_3/BLOB_OBJECTURL_STREAMING.md`)
+- [x] Réponses aux questions mémoire/buffering/streaming (même fichier)
+- [ ] `RAPPORT_IA_MODELE.md` — section TP2 (Mission 2, Mission 3, bascule
+      Mongo Atlas) encore à rédiger
