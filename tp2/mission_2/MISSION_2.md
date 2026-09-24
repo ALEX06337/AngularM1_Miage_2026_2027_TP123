@@ -12,8 +12,7 @@ le modifier** pour cette mission.
 
 - `TrackService.list(page, limit)` doit vraiment transmettre `page` et
   `limit` au backend ;
-- flux attendu : `composant bibliothèque → TrackService → HttpClient →
-  GET /api/tracks?page=...&limit=...` ;
+- flux attendu : `composant bibliothèque → TrackService → HttpClient → GET /api/tracks?page=...&limit=...` ;
 - représenter avec des **Signals** : `tracks`, `page` (page courante),
   `pages` (nombre total de pages), `loading`, et l'erreur éventuelle ;
 - afficher avec `@for`, l'état vide avec `@empty`, le chargement avec `@if` ;
