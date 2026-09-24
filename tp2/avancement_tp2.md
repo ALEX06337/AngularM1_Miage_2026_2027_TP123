@@ -4,6 +4,13 @@ Suivi global du TP2 (`SUJET_ETUDIANT_TP2.md`), sur la branche `tp2`. Même
 principe que `tp1/avancement_tp1.md` : chaque étape est documentée au fur et
 à mesure, cochée quand elle est vraiment vérifiée (pas juste codée).
 
+**Documentation détaillée par mission** (même format que `tp1/mission_0/`
+et `tp1/mission_1/`) :
+- [`mission_2/README.md`](mission_2/README.md) et [`mission_2/MISSION_2.md`](mission_2/MISSION_2.md)
+- [`mission_3/README.md`](mission_3/README.md), [`mission_3/MISSION_3.md`](mission_3/MISSION_3.md),
+  [`mission_3/FLUX_UPLOAD_LECTURE.md`](mission_3/FLUX_UPLOAD_LECTURE.md) (flux détaillé + intercepteur JWT),
+  [`mission_3/BLOB_OBJECTURL_STREAMING.md`](mission_3/BLOB_OBJECTURL_STREAMING.md) (Blob/ObjectURL + 5 questions du sujet)
+
 ## Prérequis (TP1 doit être fonctionnel) — à vérifier en début de séance
 
 - [ ] Backend lancé (`cd backend && npm start`), `GET /api/health` OK
@@ -58,8 +65,6 @@ précisément ce qui reste à faire par rapport à `SUJET_ETUDIANT_TP2.md` :
       change bien à chaque clic → capture d'écran pour les livrables
 - [ ] (Avancé, optionnel) Paginator Angular Material
 - [ ] (Avancé, optionnel) Pagination Mongoose via `aggregate-paginate-v2` + MAJ `API_CONTRACT.md`
-- [ ] (Avancé, optionnel) Paginator Angular Material
-- [ ] (Avancé, optionnel) Pagination Mongoose via `aggregate-paginate-v2` + MAJ `API_CONTRACT.md`
 
 ## Mission 3 — Upload et lecture audio — code fait, vérif navigateur + questions à faire
 
@@ -90,11 +95,13 @@ précisément ce qui reste à faire par rapport à `SUJET_ETUDIANT_TP2.md` :
       backend s'affiche bien, vérifier Network que le multipart contient
       bien `audio` + `title`) — je n'ai pas d'outil pour piloter un
       navigateur ici, donc ceci n'est pas vérifié de mon côté
-- [ ] Documenter le flux composant → service → `HttpClient` → API (upload)
-      et API → `Blob` → `ObjectURL` → `<audio>` (lecture) — rédactionnel, à faire
-- [ ] Repérer l'intercepteur JWT sur la requête audio (`auth.interceptor.ts`)
-      et expliquer pourquoi un `src` direct ne reçoit pas le header — rédactionnel
-- [ ] Répondre aux questions mémoire/buffering/streaming du sujet — rédactionnel
+- [x] Flux composant → service → `HttpClient` → API (upload) et
+      API → `Blob` → `ObjectURL` → `<audio>` (lecture) documenté en détail
+      dans [`mission_3/FLUX_UPLOAD_LECTURE.md`](mission_3/FLUX_UPLOAD_LECTURE.md)
+- [x] Intercepteur JWT sur la requête audio et raison pour laquelle un `src`
+      direct ne reçoit pas le header : expliqué dans le même document
+- [x] Réponses aux questions mémoire/buffering/streaming rédigées dans
+      [`mission_3/BLOB_OBJECTURL_STREAMING.md`](mission_3/BLOB_OBJECTURL_STREAMING.md)
 
 ## Checkpoint Network — à faire
 
