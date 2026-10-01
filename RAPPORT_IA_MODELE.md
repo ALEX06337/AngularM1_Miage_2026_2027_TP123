@@ -1,10 +1,12 @@
-# Rapport d'usage de l'IA - TP1
+# Rapport d'usage de l'IA
 
 Pour chaque mission, détailler et fournir des explications concernant : objectif; prompt principal; plan proposé par l'agent; vérifications réalisées par le binôme; erreurs ou propositions rejetées; fichiers effectivement modifiés; preuve de fonctionnement; ce que chaque membre sait maintenant expliquer sans l'agent.
 
 Assistant utilisé : Claude Code (modèles Claude Sonnet 5 / Haiku 4.5 selon les sessions).
 
 ---
+
+# TP1
 
 ## Préparation base de données (hors Atlas)
 
@@ -225,3 +227,218 @@ piste apparaît grisée avec le bouton désactivé.
 
 **Preuve de fonctionnement** : testé et confirmé par le binôme ("ok top ça
 marche c'est nikel").
+
+---
+
+## Discussion conceptuelle (mode chat) — service Angular, FormData, multer, Observable vs Promise
+
+**Objectif** : usage de l'assistant en mode "discussion générale" tel que
+recommandé par `CONSEILS_POUR_UTIISER_ASSISTANT_AI.md` (§1) — poser des
+questions de cours pour combler des manques de compréhension, sans
+générer ni modifier de code.
+
+**Prompt principal** : les quatre questions listées telles quelles par
+l'exemple du document de conseils : « Explique-moi le concept de service
+en Angular. », « Qu'est-ce que l'API `FormData` des navigateurs ? »,
+« Qu'est-ce que le module npm `multer` ? », « Quelle est la différence
+entre un `Observable` et une `Promise` ? ».
+
+**Plan proposé par l'agent** : réponse directe à chacune des quatre
+questions, en rattachant chaque concept générique à son usage concret dans
+le repo (`AuthService`/`TrackService` comme seuls points d'accès à
+`HttpClient`, `FormData` utilisé pour l'upload de piste audio, `multer`
+tel que configuré dans `backend/src/app.js` — `diskStorage`, UUID, limite
+25 Mo, allowlist MIME, suppression du fichier orphelin en cas d'échec
+Mongo —, et `Observable` vs `Promise` en lien avec la convention du repo
+imposant un `subscribe({ next, error })` explicite sur chaque appel
+`HttpClient`), plutôt que des définitions génériques hors contexte.
+
+**Vérifications réalisées par le binôme** : relecture des passages cités
+de `backend/src/app.js` (configuration Multer) et de `CLAUDE.md`
+(convention `subscribe({ next, error })`) pour confirmer que les réponses
+correspondaient bien au code réel du projet et pas à une réponse
+générique non vérifiée.
+
+**Erreurs ou propositions rejetées** : aucune, échange purement
+explicatif.
+
+**Fichiers effectivement modifiés** : aucun (mode chat, pas de code
+produit ni de fichier touché).
+
+**Preuve de fonctionnement** : non applicable (pas de code exécuté) ;
+preuve = capacité du binôme à reformuler chaque réponse ci-dessous.
+
+**Ce que chaque membre sait maintenant expliquer sans l'agent** : la
+différence entre un service Angular (`@Injectable`, logique réutilisable
+injectée via `inject()`) et un composant ; ce qu'encode concrètement
+`multipart/form-data` via `FormData` et pourquoi c'est nécessaire pour
+envoyer un fichier binaire en HTTP ; le rôle de `multer` comme middleware
+Express qui parse ce multipart et écrit le fichier sur disque avant
+l'écriture en base ; pourquoi Angular utilise des `Observable` (RxJS,
+lazy, annulables, multi-valeurs) plutôt que des `Promise` (eager, une
+seule résolution) pour `HttpClient`, et pourquoi le repo impose de
+toujours expliciter `next`/`error` à la souscription.
+
+---
+
+# TP2
+
+## Bascule MongoDB local/Atlas
+
+**Objectif** : pouvoir choisir entre une instance Mongo locale et un
+cluster MongoDB Atlas (cloud) au démarrage du backend, sans casser la
+configuration existante, en vue de continuer le TP2 avec un Mongo partagé
+dans le cloud plutôt que local.
+
+**Contexte** : ce travail a été fait lors d'une session séparée, avant la
+reprise du TP2 documentée ci-dessous ; le détail exact du prompt et des
+échanges de cette session n'est pas dans cette conversation-ci — cette
+entrée est reconstruite à partir du commit produit
+(`feat: bascule MongoDB local/Atlas via MONGO_SOURCE`) et de sa relecture.
+
+**Plan (déduit du commit)** : ajout d'une variable `MONGO_SOURCE`
+(`local`/`atlas`, défaut `local`) dans `backend/.env`, avec deux URI
+séparées (`MONGODB_URI_LOCAL`/`MONGODB_URI_ATLAS`) et un repli sur
+l'ancienne variable `MONGODB_URI` seule si `MONGO_SOURCE` est absent (pour
+ne pas casser un `.env` déjà en place).
+
+**Vérifications réalisées** (dans cette conversation, après récupération du
+commit sur la branche `tp2` par `git cherry-pick`) : relance manuelle du
+backend, lecture des logs de démarrage confirmant `[startup] Connecté à
+MongoDB (source: atlas)` et `GET /api/health` → `200`, sans jamais afficher
+l'URI complète.
+
+**Erreurs ou propositions rejetées** : la branche portant ce changement
+(`feat/mongo-source-switch`) avait été créée à partir de la branche `tp2`
+au lieu de `main`, donc son merge dans `main` (PR #1) a aussi ramené les
+commits TP2 en cours — repérés et corrigés en revert sur `main`, puis le
+commit du switch Mongo seul a été rapatrié sur `tp2` par cherry-pick pour
+ne garder que ce qui devait y être.
+
+**Fichiers effectivement modifiés** : `backend/src/server.js`,
+`backend/.env.example`.
+
+**Preuve de fonctionnement** : `GET /api/health` → `200 {"status":"ok"}`
+avec le backend connecté à Atlas (log `source: atlas`), confirmé dans
+cette conversation avant de reprendre le travail TP2.
+
+---
+
+## Mission 2 — Bibliothèque paginée
+
+**Objectif** : vérifier/compléter la pagination serveur de la liste des
+pistes (`GET /api/tracks?page=&limit=`), sans modifier le backend.
+
+**Prompt principal** : "Ok on peux commencer le TP2 alors", puis "donc tu
+as fini tout le tp 2??" (qui a mené à préciser honnêtement ce qui restait
+à faire).
+
+**Plan proposé par l'agent** : relecture de `track.service.ts` et
+`tracks-page.ts` avant toute modification (constat : la pagination, les
+Signals `tracks`/`page`/`pages`/`loading` et l'absence de slicing local
+existaient déjà dans le starter) ; ajout du seul point manquant, un Signal
+`error` rempli sur échec de `TrackService.list()` et affiché dans le
+template avec `role="alert"`.
+
+**Vérifications réalisées par le binôme** : test réel dans le navigateur
+(DevTools → Network) — clic sur "Suivant", confirmation que la requête
+passe de `page=1&limit=5` à `page=2&limit=5` ; capture d'écran fournie et
+relue par l'agent, qui a aussi identifié et expliqué que les lignes
+`HEAD /api/tracks/:id/audio` visibles dans la même capture n'étaient pas
+liées à la pagination mais à une fonctionnalité différente
+(`isAvailable()`, déjà documentée au TP1).
+
+**Erreurs ou propositions rejetées** : aucune sur le code ; une confusion
+initiale du binôme entre les requêtes `HEAD` de `isAvailable()` et un
+éventuel bug a été clarifiée par relecture du code plutôt que corrigée
+"à l'aveugle".
+
+**Fichiers effectivement modifiés** :
+`frontend-starter/src/app/components/tracks-page/tracks-page.ts`,
+`tracks-page.html`, `tracks-page.css`. Documentation créée :
+`tp2/mission_2/MISSION_2.md`, `tp2/mission_2/README.md`.
+
+**Preuve de fonctionnement** : `npx tsc --noEmit` et `npx ng build` sans
+erreur ; capture Network confirmant le changement de `page` :
+`tp2/mission_2/capture-network-page1.png` et
+`tp2/mission_2/capture-network-page2-isavailable.png`.
+
+**Ce que chaque membre sait maintenant expliquer sans l'agent** : pourquoi
+la pagination doit être pilotée par le serveur (`skip`/`limit` côté
+Mongoose) et non simulée côté client ; pourquoi le Signal `error` est
+remis à `''` en tout début de `load()` et pas seulement en cas de succès ;
+la différence entre le message générique affiché à l'écran et le détail
+technique réservé à `console.error`.
+
+---
+
+## Mission 3 — Upload et lecture audio
+
+**Objectif** : compléter (sans réimplémenter l'existant ni modifier le
+contrat HTTP) la validation du fichier avant envoi, les retours visuels
+pendant/après l'upload, l'enrichissement des cards, et la propreté mémoire
+de la lecture audio (`Blob`/`ObjectURL`).
+
+**Prompt principal** : demande de reprise du TP2 après la bascule Mongo,
+puis consigne explicite de continuer sur la Mission 3.
+
+**Constat de départ** (vérifié en relisant le code avant toute
+modification) : l'upload et la lecture **fonctionnaient déjà** dans leur
+cas nominal (`FormData` correct, `Blob`→`ObjectURL`→`<audio controls>`
+déjà en place, y compris la barre de lecture native du navigateur) — ce
+qui manquait précisément : validation fichier, état de chargement/anti
+double-soumission, erreurs serveur et succès affichés, cards incomplètes
+(dont un bug d'affichage de taille : octets affichés comme "Ko" sans
+conversion), et absence de révocation de l'`ObjectURL` à la destruction du
+composant.
+
+**Plan proposé par l'agent** : ajout de `MAX_FILE_SIZE`/`ALLOWED_MIME_TYPES`
+alignés sur les contrôles réels de `backend/src/app.js` ; Signals
+`uploading`/`uploadError`/`uploadSuccess` séparés de ceux de la liste ;
+réinitialisation du `<input type="file">` via une référence à l'élément
+natif (impossible par data-binding classique) ; correction de
+`formatSize()` ; `DestroyRef.onDestroy()` pour révoquer l'`ObjectURL`
+encore active à la fermeture du composant.
+
+**Vérifications réalisées par le binôme** : test complet dans le
+navigateur réel — upload réussi (message de succès, formulaire vidé,
+cards avec format/taille/date corrects), lecture audio (lecteur natif
+fonctionnel), inspection Network confirmant que la réponse de lecture est
+un vrai flux (`Content-Type: audio/mpeg`, `Content-Length`,
+`Accept-Ranges: bytes`) **et** que le header `Authorization: Bearer ...`
+est bien présent sur cette requête (capture fournie et relue) ; test
+"propriétaire uniquement" avec un 2ᵉ compte, confirmant une bibliothèque
+vide plutôt qu'un simple 404 isolé — preuve plus solide que ce qui était
+initialement demandé, car elle montre que la liste elle-même est filtrée
+par `ownerId`, pas seulement la route de lecture individuelle.
+
+**Erreurs ou propositions rejetées** : le test "fichier invalide → erreur
+400" n'a pas pu être déclenché tel quel, l'attribut `accept="audio/*"` de
+l'`<input>` filtrant déjà la boîte de dialogue du navigateur — comportement
+attendu et documenté comme tel plutôt que forcé artificiellement.
+
+**Fichiers effectivement modifiés** :
+`frontend-starter/src/app/components/tracks-page/tracks-page.ts`,
+`tracks-page.html`, `tracks-page.css`. Documentation créée :
+`tp2/mission_3/MISSION_3.md`, `tp2/mission_3/README.md`,
+`tp2/mission_3/FLUX_UPLOAD_LECTURE.md` (flux détaillé + rôle de
+l'intercepteur JWT sur la requête audio),
+`tp2/mission_3/BLOB_OBJECTURL_STREAMING.md` (justification Blob/ObjectURL
+et réponses aux 5 questions mémoire/buffering/streaming du sujet).
+
+**Preuve de fonctionnement** : `npx tsc --noEmit` et `npx ng build` sans
+erreur ; captures dans `tp2/mission_3/` :
+`capture-upload-succes-cards.png`, `capture-lecture-audio.png`,
+`capture-network-audio-headers.png`, `capture-proprietaire-liste-vide.png`.
+
+**Ce que chaque membre sait maintenant expliquer sans l'agent** : pourquoi
+un `<audio src="...">` direct ne recevrait jamais le header JWT (la balise
+déclenche une requête navigateur native, hors du pipeline `HttpClient` où
+vit l'intercepteur) et pourquoi c'est précisément la raison de passer par
+`Blob`/`ObjectURL` ; pourquoi la validation frontend n'est qu'un confort
+et jamais une garantie de sécurité (la seule validation qui protège
+réellement le serveur est celle de Multer) ; pourquoi
+`URL.revokeObjectURL` est nécessaire (le navigateur garde le `Blob` en
+mémoire tant que l'URL n'est pas révoquée, indépendamment du ramasse-miettes
+JS) ; la différence entre "upload qui marche une fois" et "upload robuste
+aux erreurs/latence/double-clic".

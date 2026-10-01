@@ -12,3 +12,15 @@
   color: #b91c1c !important;
   font-style: italic;
 }
+
+.success {
+  color: #1d755e;
+}
+
+.now-playing {
+  margin-top: 0.8rem;
+}
+
+.now-playing p {
+  margin: 0 0 0.4rem;
+}
