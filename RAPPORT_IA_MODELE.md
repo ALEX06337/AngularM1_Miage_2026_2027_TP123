@@ -442,3 +442,48 @@ réellement le serveur est celle de Multer) ; pourquoi
 mémoire tant que l'URL n'est pas révoquée, indépendamment du ramasse-miettes
 JS) ; la différence entre "upload qui marche une fois" et "upload robuste
 aux erreurs/latence/double-clic".
+
+---
+
+# TP3
+
+## Missions 5, 6 et 7 — Suppression, progression d'upload, tests
+
+**Objectif** : ajouter la suppression d'une piste (confirmation, SnackBar,
+anti double-clic, gestion 404), la progression d'upload, et des tests
+automatisés frontend (+ quelques tests de contrat backend).
+
+**Prompt principal** : « fait une branche avec le tp3 pour le faire avec des
+explications et comment tu fais les différentes étapes ».
+
+**Plan proposé par l'agent** : lecture du sujet et du code existant ;
+branche `tp3` ; installation d'Angular Material (SnackBar) ; service
+(`delete`, `upload` avec événements) ; composant et template ; tests
+frontend ; tests backend sans Mongo ; mise à jour de `API_CONTRACT.md` ;
+documentation dans `tp3/avancement_tp3.md`.
+
+**Vérifications réalisées** : `npm test` frontend (17/17) et backend (6/6),
+`npm run build` OK, test de mutation (URL du DELETE cassée → 8 tests
+échouent). **À compléter par le binôme** : test dans le navigateur et
+captures Network (non réalisables par l'agent).
+
+**Erreurs ou propositions rejetées** : 4 tests en échec au premier lancement
+(pas de `localStorage` dans l'environnement de test) → stub partagé
+`shared/testing/local-storage-stub.ts`. Tests backend de pagination et de
+propriétaire non écrits (nécessitent une vraie base).
+
+**Fichiers modifiés** : `track.service.ts`, `tracks-page.{ts,html,css}`,
+`angular.json` (thème Material), `package.json` (+ `@angular/material`,
+`@angular/cdk`), 4 fichiers `*.spec.ts` + stub, `backend/test/api.test.js`,
+`API_CONTRACT.md`, `tp3/avancement_tp3.md`.
+
+**Preuve de fonctionnement** : sorties de tests et de build ci-dessus ;
+captures Network `tp3/mission_5/capture-network-delete.png` (`DELETE` →
+`204`) et `tp3/mission_6/capture-network-upload.png` (`POST` → `201`),
+testées en navigateur par le binôme. Les captures initiales exposaient le
+JWT : elles ont été recadrées avant d'être versionnées. La barre de
+progression n'est pas visible en local sans throttling (envoi quasi
+instantané).
+
+**Ce que chaque membre doit savoir expliquer** : voir la section « Restitution
+orale » du sujet ; éléments de réponse dans `tp3/avancement_tp3.md`.

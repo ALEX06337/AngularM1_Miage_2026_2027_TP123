@@ -15,11 +15,27 @@ export class TrackService {
     });
   }
 
+  /**
+   * Upload multipart avec événements de progression.
+   *
+   * Avec `observe: 'events'` + `reportProgress: true`, l'Observable n'émet
+   * plus seulement la réponse finale : il émet une suite d'HttpEvent
+   * (Sent, UploadProgress x N, ResponseHeader, Response). C'est au
+   * consommateur de les distinguer via `event.type`.
+   */
   upload(file: File, title: string) {
     const body = new FormData();
     body.append('audio', file);
     body.append('title', title);
-    return this.http.post<Track>('/api/tracks', body);
+    return this.http.post<Track>('/api/tracks', body, {
+      observe: 'events',
+      reportProgress: true,
+    });
+  }
+
+  /** DELETE /api/tracks/:id -> 204 sans corps. */
+  delete(id: string) {
+    return this.http.delete<void>(`/api/tracks/${id}`);
   }
 
   audio(id: string) {

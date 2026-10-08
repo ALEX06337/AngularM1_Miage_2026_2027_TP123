@@ -19,6 +19,12 @@
         />
       </label>
       <small>Formats acceptés : MP3, WAV, OGG, M4A · 25 Mo maximum.</small>
+      @if (uploading()) {
+        <div class="progress" role="status">
+          <progress max="100" [value]="uploadProgress()"></progress>
+          <span>{{ uploadProgress() }} %</span>
+        </div>
+      }
       @if (uploadError()) {
         <p class="error" role="alert">{{ uploadError() }}</p>
       }
@@ -51,12 +57,21 @@
               <small class="unavailable-label">Fichier indisponible sur ce backend</small>
             }
           </div>
-          <button
-            type="button"
-            (click)="play(track)"
-            [disabled]="!isAvailable(track)"
-            [attr.aria-label]="'Lire ' + track.title"
-          >▶</button>
+          <div class="actions">
+            <button
+              type="button"
+              (click)="play(track)"
+              [disabled]="!isAvailable(track)"
+              [attr.aria-label]="'Lire ' + track.title"
+            >▶</button>
+            <button
+              type="button"
+              class="danger"
+              (click)="remove(track)"
+              [disabled]="isDeleting(track)"
+              [attr.aria-label]="'Supprimer ' + track.title"
+            >{{ isDeleting(track) ? 'Suppression…' : 'Supprimer' }}</button>
+          </div>
         </div>
       } @empty {
         <p>Aucune piste.</p>
